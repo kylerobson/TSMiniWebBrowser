@@ -193,8 +193,13 @@ enum actionSheetButtonIndex {
     webView.delegate = self;
     
     // Load the URL in the webView
-    NSURLRequest *requestObj = [NSURLRequest requestWithURL:urlToLoad];
-    [webView loadRequest:requestObj];
+    if (urlToLoad != nil) {
+        NSURLRequest *requestObj = [NSURLRequest requestWithURL:urlToLoad];
+        [webView loadRequest:requestObj];
+    }
+    else if (HTMLString != nil) {
+        [self loadHTMLString:HTMLString];
+    }
 }
 
 #pragma mark -
@@ -204,6 +209,7 @@ enum actionSheetButtonIndex {
     if(self)
     {
         urlToLoad = url;
+        HTMLString = nil;
         
         // Defaults
         mode = TSMiniWebBrowserModeNavigation;
@@ -211,6 +217,28 @@ enum actionSheetButtonIndex {
         showPageTitleOnTitleBar = YES;
         showReloadButton = YES;
         showActionButton = YES;
+        modalDismissButtonTitle = NSLocalizedString(@"Done", nil);
+        forcedTitleBarText = nil;
+        barStyle = UIBarStyleDefault;
+		barTintColor = nil;
+    }
+    
+    return self;
+}
+
+- (id)initWithHTMLString:(NSString *)aHTMLString {
+    self = [self init];
+    if(self)
+    {
+        urlToLoad = nil;
+        HTMLString = aHTMLString;
+        
+        // Defaults
+        mode = TSMiniWebBrowserModeNavigation;
+        showURLStringOnActionSheetTitle = NO;
+        showPageTitleOnTitleBar = YES;
+        showReloadButton = NO;
+        showActionButton = NO;
         modalDismissButtonTitle = NSLocalizedString(@"Done", nil);
         forcedTitleBarText = nil;
         barStyle = UIBarStyleDefault;
@@ -302,6 +330,20 @@ enum actionSheetButtonIndex {
 {
     // Return YES for supported orientations
     return (interfaceOrientation != UIInterfaceOrientationPortraitUpsideDown);
+}
+
+- (void)viewWillLayoutSubviews
+{
+    [super viewWillLayoutSubviews];
+
+    if (self.navigationController != nil) {
+        webView.scrollView.contentInset = UIEdgeInsetsMake(64.0f, 0.0f, 0.0f, 0.0f);
+        webView.scrollView.contentOffset = CGPointMake(0.0f, 64.0f);
+    }
+    else {
+        webView.scrollView.contentInset = UIEdgeInsetsZero;
+        webView.scrollView.contentOffset = CGPointZero;
+    }
 }
 
 /* Fix for landscape + zooming webview bug.
@@ -445,6 +487,15 @@ enum actionSheetButtonIndex {
 
 - (void)loadURL:(NSURL*)url {
     [webView loadRequest: [NSURLRequest requestWithURL: url]];
+}
+
+- (void)loadHTMLString:(NSString *)aHTMLString
+{
+    HTMLString = aHTMLString;
+    NSString *fileName = [@"TSMiniWebBrowserLocalHTML.html" stringByAppendingPathComponentToCachesDirectory];
+    [aHTMLString writeToFile:fileName atomically:NO encoding:NSUTF8StringEncoding error:NULL];
+    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL fileURLWithPath:fileName]];
+    [webView loadRequest:request];
 }
 
 #pragma mark - UIWebViewDelegate

@@ -40,6 +40,7 @@ typedef enum {
 @interface TSMiniWebBrowser : UIViewController <UIWebViewDelegate, UIActionSheetDelegate> {
     // URL
     NSURL *urlToLoad;
+    NSString *HTMLString;
     
     // Layout
     UIWebView *webView;
@@ -81,6 +82,9 @@ typedef enum {
 
 // Public Methods
 - (id)initWithUrl:(NSURL*)url;
+- (id)initWithHTMLString:(NSString *)aHTMLString;
 - (void)setFixedTitleBarText:(NSString*)newTitleBarText;
 - (void)loadURL:(NSURL*)url;
+- (void)loadHTMLString:(NSString *)aHTMLString;
+
 @end

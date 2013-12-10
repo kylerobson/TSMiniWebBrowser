@@ -309,6 +309,25 @@ enum actionSheetButtonIndex {
 	}
 	
 	[webView.scrollView setScrollsToTop:YES];
+    
+    if (IOS7PLUS && self.navigationController != nil) {
+        webView.scrollView.contentInset = UIEdgeInsetsMake(64, 0, 0, 0);
+        webView.scrollView.scrollIndicatorInsets = UIEdgeInsetsMake(64, 0, 0, 0);
+    }
+}
+
+- (void)viewWillLayoutSubviews
+{
+    [super viewWillLayoutSubviews];
+    
+    if (IOS7PLUS && self.navigationController != nil) {
+        webView.scrollView.contentInset = UIEdgeInsetsMake(64, 0, 0, 0);
+        webView.scrollView.scrollIndicatorInsets = UIEdgeInsetsMake(64, 0, 0, 0);
+    }
+    else {
+        webView.scrollView.contentInset = UIEdgeInsetsZero;
+        webView.scrollView.scrollIndicatorInsets = UIEdgeInsetsZero;
+    }
 }
 
 -(void) viewWillDisappear:(BOOL)animated {
@@ -330,20 +349,6 @@ enum actionSheetButtonIndex {
 {
     // Return YES for supported orientations
     return (interfaceOrientation != UIInterfaceOrientationPortraitUpsideDown);
-}
-
-- (void)viewWillLayoutSubviews
-{
-    [super viewWillLayoutSubviews];
-
-    if (self.navigationController != nil) {
-        webView.scrollView.contentInset = UIEdgeInsetsMake(64.0f, 0.0f, 0.0f, 0.0f);
-        webView.scrollView.contentOffset = CGPointMake(0.0f, 64.0f);
-    }
-    else {
-        webView.scrollView.contentInset = UIEdgeInsetsZero;
-        webView.scrollView.contentOffset = CGPointZero;
-    }
 }
 
 /* Fix for landscape + zooming webview bug.

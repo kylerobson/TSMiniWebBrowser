@@ -504,7 +504,7 @@ enum actionSheetButtonIndex {
 - (void)loadHTMLString:(NSString *)aHTMLString
 {
     HTMLString = aHTMLString;
-    NSString *fileName = [self stringByAppendingPathComponentToCachesDirectory:@"TSMiniWebBrowserLocalHTML.html"];
+    NSString *fileName = [TSMiniWebBrowser stringByAppendingPathComponentToCachesDirectory:@"TSMiniWebBrowserLocalHTML.html"];
     [aHTMLString writeToFile:fileName atomically:NO encoding:NSUTF8StringEncoding error:NULL];
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL fileURLWithPath:fileName]];
     [webView loadRequest:request];
@@ -515,9 +515,9 @@ enum actionSheetButtonIndex {
     return [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) lastObject];
 }
 
-- (NSString *)stringByAppendingPathComponentToCachesDirectory:(NSString *)string
++ (NSString *)stringByAppendingPathComponentToCachesDirectory:(NSString *)string
 {
-    return [[NSString cachesDirectory] stringByAppendingPathComponent:string];
+    return [[TSMiniWebBrowser cachesDirectory] stringByAppendingPathComponent:string];
 }
 
 #pragma mark - UIWebViewDelegate
